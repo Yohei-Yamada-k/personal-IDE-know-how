@@ -1,0 +1,139 @@
+【事前環境構築】
+Linuxの開発環境構築のノウハウを下記に残す。
+
+
+■仮想環境とWindowsのSSH接続設定
+
+VirtualBoxのUbuntuにホストオンリーアダプタを使用して簡単にssh接続する
+http://xblood.hatenablog.com/entry/2017/04/17/200000
+SSH通信を行うためには、openssh-serverが必要となる。
+※CentOSはUbuntuと異なり、openssh-serverがデフォルトでインストールされている。
+sshの設定
+
+ゲスト-ホスト間通信にSSHが必要なはず。
+ubuntuにはデフォルトでsshインストールされているが
+サーバとして使うにはSSH接続を受け入れるための設定する必要がある。
+
+□openSSHのインストール
+$ sudo apt-get install openssh-server
+# SSHの確認
+$ ssh -V
+OpenSSH_6.6.1p1 Ubuntu-2ubuntu2.6, OpenSSL 1.0.1f6 Jan 2014
+
+□VirtulaBoxの設定
+# virtualBoxの設定は3通りありますが、ホストオンリーアダプターを設定する方法を推奨します。
+# アダプター1を"NAT"、アダプター2を"ホストオンリーアダプター"に設定する
+# - アダプター1（おそらくeth0）はDHCPを使う
+# - アダプター2（おそらくeth1）は固定IPアドレスを設定する
+
+# VirtualBoxマネジャー->ファイル->環境設定->ネットワーク->ホストオンリーネットワーク->
+# ここにアダプタがない場合は追加
+
+# VirtualBoxマネジャー->設定->ネットワーク->アダプター2
+# 割り当て→ホストオンリーアダプターに変更
+
+# いったんTeraTermで接続してみます。
+# ※ systemctl start sshd.service が必要？
+
+
+■ファイルサーバーの構築
+　（LinuxをWindowsのファイルサーバーとするため、sambaを導入する必要がある
+　　Windowsでソースを編集したい）
+
+□sambaのインストール
+# sudo apt-get install -y samba
+# sambaに登録するユーザーを登録
+$ sudo pdbedit -a "username"
+$ sudo pdbedit -a kss
+
+□sambaは再起動が必要
+$ sudo service smbd restart
+
+https://www.alloneslife-0to1work.jp/command-line/samba
+Sambaを使いUbuntuとWindowsとの間でファイル共有する
+https://qiita.com/Reizouko/items/8bee9e02e74565b6c147
+sambaサーバによるファイル共有環境の構築手順メモ
+https://www.virment.com/config-sambaserver/
+UBUNTUにSAMBAをインストール
+https://tech.nosuz.jp/2016/05/install-samba/
+パーミッションの問題
+http://www.obenri.com/_samba/samba_share.html
+Sambaの共有ディレクトリに書き込むユーザー名を統一するには
+http://www.atmarkit.co.jp/flinux/rensai/linuxtips/183sambauniuser.html
+→force user =Linuxユーザー名
+　妥当性は不明・・
+
+■GitのSSH設定
+
+# Gitをインストールする
+$ sudo apt-get install git
+# バージョンの確認
+$ dpkg -l git
+# 変更をコミットするとき表示する設定
+# 変更したければ、再度コマンドを実行して上書きすればいい。
+$ git config --global user.name "Yohei-Yamada-k"
+$ git config --global user.email "Yohei.Yamada@keisetsu.co.jp"
+# 確認してみる
+$ git config --global --list
+
+□GitHubにSSH接続する
+# sh接続するために鍵の登録が必要になる。
+# 公開鍵・秘密の鍵を作成する。
+# 秘密鍵は自分で保持し、公開鍵は相手（gitHub)に送信。
+
+GitHubにSSH接続できるようにする
+https://qiita.com/shimisunet/items/1b9568ff62a1550a931b
+【秘密鍵/公開鍵】コピペで出来る！鍵認証の設定方法
+https://qiita.com/nnahito/items/dbe6fbfe347cd66ae7e6
+
+#.sshフォルダがない場合は先にフォルダを生成する必要がある
+
+# 公開鍵と秘密鍵を生成
+$ ssh-keygen -t rsa -C "your_email@example.com"
+
+$ cd ~/.ssh
+$ ls ~/.ssh
+
+# ターミナルにアウトプットしてコピーする。
+$ cat id_rsa.pub
+
+# GitHubに登録する
+https://github.com/settings/keys
+
+
+
+■Linux Bash
+#bash表示を変更するには
+http://www.atmarkit.co.jp/flinux/rensai/linuxtips/002cngprmpt.html
+
+変更
+export PS1="\u@\h:$ "
+表示
+kss@kss-VirtualBox:$ 
+
+#Linuxで、bash プロンプトを素敵で実用的なものに変更する
+https://jp.linux.com/news/linuxcom-exclusive/416957-lco20140519
+# //home/** で.bashrcをエディタで編集する
+$ nano .bashrc
+# export PS1='\[\e[1;32m\]\u @ \[\e[1;33m\]\h \[\e[1;35m\]\w :\[\e[1;36m\]\$ \[\e[m\] '
+# bashの変更をロードするコマンド
+$ source ~/.bashrc
+
+# Ubuntu bashのプロンプトHack!!!!（gitブランチ表示）
+https://qiita.com/ryosukue/items/bc1eae639e3950790eb9
+# gitを表示するなら以下で良い
+
+if [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+fi
+if [ -f /etc/bash_completion.d/git-prompt ]; then
+    export PS1='\[\033[01;32m\]\u@\h\[\033[01;33m\] \w$(__git_ps1) \n\[\033[01;34m\]\$\[\033[00m\] '
+else
+    export PS1='\[\033[01;32m\]\u@\h\[\033[01;33m\] \w \n\[\033[01;34m\]\$\[\033[00m\] '
+fi
+
+# 変更をロードして完了
+
+
+
+
