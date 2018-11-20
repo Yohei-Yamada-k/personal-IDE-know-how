@@ -1,0 +1,115 @@
+> BASE部分
+> 下回りから上位（アプリ層）までが開発対象
+> ・N/Wストリーミング
+> ・外部からの命令を本体内部で制御
+> 
+> 開発言語：C++
+> 
+> ソニーのネットワークカメラ
+> https://www.sony.jp/snc/
+> 
+> ソニーのネットワークカメラ　業種・シーン別
+> https://www.sony.jp/snc/scene/
+> 
+> ソニーのネットワークカメラ用語集
+> https://www.sony.jp/snc/support/glossary/index.html
+> 
+> 入門ガイド ? Google Test ドキュメント日本語訳 - OpenCV.jp
+> http://opencv.jp/googletestdocs/primer.html
+
+
+■参照
+構造体などの大きなデータを管巣に渡す場合、引数にconst形式にすると効率的。
+
+struct Peson{
+	char name[50];
+	int age;
+}
+
+void PrintBox_s(int &val_s){
+	*****	
+}
+void PrintBox_a(int *val){
+	*****	
+}
+
+int main{
+	Person val = {"qwerty", 99};
+	
+	PrinfBox_s(val)	//参照渡し
+	PrinfBox_a(&val)	//アドレス渡し
+}
+
+■値渡し
+・値渡し		無印→無印
+・アドレス渡し	&　→＊
+・参照			無印→&
+
+						関数側で引数を変更しない		関数側で引数を変更する
+int型（）小さいデータ	値渡し							アドレス渡し
+構造体	大きいデータ	Constで参照渡し					アドレス渡し
+
+■動的メモリ
+・クラス
+class MyClass{
+}
+
+int main(){
+	MyClass　*pmyclass = new MyClass //オブジェクトを生成
+	dlete　*pmyclass
+	}
+	
+	
+・配列
+	pNum = new int[10];
+	delete =[] pNum;
+・変数
+	int *pNum = new int;
+	delete pNum;
+
+■コピーコンストラクタ
+//const形式の参照を使う
+//主にメンバにポインタ変数を含む場合は、コピーコンストラクタを使用する。
+//デフォルトのコピーコンストラクタを使うと、コピー元のオブジェクトが削除されたときに
+//ポインタのさす先も削除されるため、コンパイルエラーになる。
+class Person{
+	Person();
+	Person(const Peson &psn);
+}
+
+Person::Person(const Person &psn){
+	処理
+}
+
+int main(){
+	Person *psn2 = new Person(*psn1)
+}
+
+■クラス
+・純粋仮想クラス
+　一般的なクラスで細かいところをあいまいにしたまま話を進めたい場合に有効な手段
+・protected
+　派生クラスからアクセス可能
+・多重継承
+　※親から子へのオブジェクトの代入はできない
+　派生クラス　基底クラス
+　class Fax : public Phone, public Printer
+・多重継承の同名メンバ
+int main(){
+	Fax myFax;
+	myFax.Phone::Swintch(1);
+}
+■静的なメンバ
+・複数のオブジェクトで共通のメモリ領域を持つメンバ変数
+　-初期化-
+　→コンストラクタでは初期化しない
+　→CPPに1つあればよい
+　
+　→Publicな静的メンバ変数はオブジェクトを生成しなくてもスコープ解決演算子でアクセス可能。
+　→オブジェクト生成済みの場合は.でアクセス可能。
+・静的メンバ関数
+
+class ***
+	static void SetTax(double n){
+		tax = n;
+	}
