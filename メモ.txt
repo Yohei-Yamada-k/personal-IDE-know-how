@@ -1,0 +1,264 @@
+vector…可変長配列
+→動的配列
+通常の配列
+→静的配列
+
+配列と同じように扱えるのがvector
+vectorの主なメンバ関数
+.push_back 要素の追加
+.clear()　要素のクリア
+.size()　配列の大きさを得る
+.capacity()　動的配列に追加できる要素の許容量
+.empty()　要素がブランクかどうか
+
+
+イテレータ
+
+vector<int>::iterator itr; 
+として
+*itr;
+イテレータが指す要素を参照する
+
+    for (int i=0; i < 9; i++){
+        vecint.push_back(i+10);
+    }
+    for (itr = vecint.begin(); *itr; itr++) {
+        cout << "vecint.begin()" << *itr << endl;
+    }
+
+
+^練習用^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#include <iostream>
+#include <string>
+#include <vector>
+#include <list>
+ 
+using namespace std;
+ 
+int main(){
+    vector<int> vecint;
+    cout << &vecint << endl;
+    
+    for (int i=0; i < 9; i++){
+        vecint.push_back(i+10);
+    }
+        cout << "capacity =" << vecint.capacity() << endl;
+
+    list<int> list_int;
+    list_int.push_back(6);
+    list_int.push_back(7);
+    list_int.push_back(8);
+    
+    vector<int>::iterator itr;
+    list<int>::iterator itr_list;
+    
+    for (itr = vecint.begin(); *itr; itr++) {
+        cout << "vecint.begin()" << &(*itr) << endl;
+    }
+    
+    itr_list = list_int.begin();
+    while (itr_list != itr_list.end()) {
+        cout << "list_int itr_list =" << &(*itr_list) << endl;   
+    }
+    
+    
+    
+    return 0;
+}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+#include <vector>
+#include <stdio.h>
+ 
+int main(void) {
+    std::vector<int> vec{ 1, 2, 3 };
+ 
+    for (int i = 0; i < vec.size(); i++)
+        printf("%d,", vec[i]);
+    printf("\n");
+    return 0;
+}
+
+
+#include <vector>
+#include <stdio.h>
+
+int main(void) {
+	std::vector<int> vec{1,2,3};
+	
+	for (int i =0; i < vec.size(); i++){
+		printf("%d,vec[i]");
+	}
+
+
+#include <ios
+
+
+#include <iostream>
+#include <string>
+#include <vector>
+ 
+using namespace std;
+ 
+int main(){
+    vector<int> v1;
+    vector<string> v2;
+    v1.push_back(1);
+    v1.push_back(2);
+    v1.push_back(3);
+    v2.push_back("ABC");
+    v2.push_back("DEF");
+    unsigned int i;
+    for (i = 0; i < v1.size(); i++)
+    {
+        cout << "v1[" << i << "]=" << v1[i] << endl;
+    }
+    for (i = 0; i < v2.size(); i++)
+    {
+        cout << "v2[" << i << "]=" << v2[i] << endl;
+    }
+    return 0;
+}>
+
+
+
+#include <iostream>
+#include <list>
+ 
+using namespace std;
+ 
+int main(){
+    list<int> li;
+    li.push_back(1);    //  後ろにデータを挿入
+    li.push_back(2);    //  後ろにデータを挿入
+    li.push_front(3);   //  前にデータを挿入
+    list<int>::iterator itr;
+    //  データの挿入
+    itr = li.begin();   //  イテレータを先頭に設定
+    itr++;              //  一つ移動
+    li.insert(itr,4);   //  値の挿入
+    //  データの表示
+    for (itr = li.begin(); itr != li.end(); itr++){
+        cout << *itr << " ";
+    }
+    cout << endl;
+    return 0;
+}
+
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+学習テキスト：
+https://programming.pc-note.net/cpp/class.html
+配列の要素数は sizeof <名前> / sizeof *<名前> で取得。
+#define ELEM(array)    (sizeof (array) / sizeof *(array))
+・C++ における class と struct の違い
+　class はデフォルトのアクセシビリティが private
+　struct はデフォルトのアクセシビリティが public
+アクセス修飾子を付けない場合、自動的にprivateが指定
+クラス定義を元に「実体」を作ることをインスタンス化する
+このようなメンバ変数を読み書きするためのメンバ関数をアクセッサ(アクセサ)
+値を取得するためのアクセッサをgetter(ゲッター)
+値を設定するためのアクセッサをsetter
+クラス内にコンストラクタを定義しない場合、コンパイラが自動的に「何もしない」コンストラクタを生成します。
+「コンストラクタ名() :」の後に記述されているのがメンバイニシャライザ
+委譲コンストラクタ
+Sample::Sample() : Sample(0, 0) {
+    //引数付きコンストラクタに処理を任せるので
+    //ここでは何もしない
+}
+
+//メンバ変数の初期化関数
+Sample::Sample(int num, int val) :
+    number(num), val(val)
+{
+    //メンバイニシャライザで初期化するので
+    //ここでは何もしない
+}
+
+■コピーコンストラクタ
+　https://programming.pc-note.net/cpp/constructor2.html
+
+
+
+
+^^^実績コード^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#include <iostream>
+#include <string>
+#include <vector>
+#include <list>
+using namespace std;
+
+class Sample
+{
+private:
+    int number;
+    int val;
+public:
+    Sample();
+    Sample(int num, int val);
+    int getNum();
+    void setNum(int* val);
+};
+
+//Sample::Sample() : number(0),val(0)
+//{
+       // イニシャライザーのため何もしない
+//}
+Sample::Sample() : Sample(0, 0) {
+    //引数付きコンストラクタに処理を任せるので
+    //ここでは何もしない
+}
+
+//メンバ変数の初期化関数
+Sample::Sample(int num, int val) :
+    number(num), val(val)
+{
+    //メンバイニシャライザで初期化するので
+    //ここでは何もしない
+}
+
+int Sample::getNum(){
+    return number;    
+}
+
+void Sample::setNum(int* val){
+    number = *val;
+}
+
+int main(){
+    Sample samp;
+    Sample samp2(999,0);
+    int n = 100;
+    int ans = 0;
+    
+    //デフォルトコンストラクタの確認
+    samp.setNum(&n);
+    ans = samp.getNum();
+    cout << "samp =" <<ans << endl;
+    
+    //引数ありコンストラクタの確認
+    ans = samp2.getNum();
+    cout << "samp2 =" <<ans << endl;
+
+    Sample* pSamp; 
+
+    //newでメモリを確保
+    pSamp = new Sample(77,1);
+    ans = pSamp->getNum();
+    cout << "pSamp =" <<ans << endl;
+    delete pSamp;
+
+}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+^^^構造体^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+typedef struct {
+	int age;
+	int num;
+} person_t;
+person_t 構造体のメンバのメモリサイズを全て足し合わせると 41 であるのに，
+ person_t 型の変数のメモリサイズは 44 となっている． 
+ その理由は，コンピュータのアクセス速度を速めるために， 
+ アクセスに都合の良い位置にメンバを配置するためである．
+  その結果，メンバとメンバの間に隙間（パディングと呼ぶ）ができて，
+  全体のメモリサイズが大きくなる．
